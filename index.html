@@ -3,121 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>APNU SEWA KENDRA - Official Portal</title>
+    <title>Admin Dashboard - APNU SEWA KENDRA</title>
     <style>
-        :root { --primary: #1a73e8; --danger: #d93025; --success: #188038; --warning: #f29900; }
-        body { font-family: 'Segoe UI', Roboto, sans-serif; background: #f1f3f4; margin: 0; padding: 10px; display: flex; justify-content: center; }
-        .main-card { background: white; width: 100%; max-width: 600px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); overflow: hidden; padding-bottom: 20px; }
-        .header { background: var(--primary); color: white; padding: 20px; text-align: center; }
-        .logo-img-main { width: 80px; height: 80px; border-radius: 50%; background: white; padding: 3px; object-fit: contain; margin-bottom: 10px; }
-        .content { padding: 20px; }
-        label { font-weight: bold; display: block; margin-top: 10px; color: #333; font-size: 14px; }
-        input, select { width: 100%; padding: 12px; margin: 8px 0 15px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 15px; }
-        .price-tag { background: #e8f0fe; color: var(--primary); padding: 10px; border-radius: 6px; font-weight: bold; text-align: center; margin-bottom: 15px; border: 1px solid var(--primary); }
-        .btn { width: 100%; padding: 15px; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 10px; transition: 0.3s; }
-        .btn-blue { background: var(--primary); color: white; }
-        .btn-green { background: var(--success); color: white; text-decoration: none; display: block; text-align: center; box-sizing: border-box; font-size: 18px; }
-        #payment-page, #waiting-page, #document-page, #page-counter { display: none; }
-        .timer-clock { font-size: 22px; border: 2px solid var(--danger); display: inline-block; padding: 5px 20px; border-radius: 8px; margin-top: 5px; color: var(--danger); font-weight: bold; }
-        
-        /* Spinner */
-        .loader { border: 6px solid #f3f3f3; border-top: 6px solid var(--primary); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 20px auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        .success-box { background: #e6f4ea; border: 2px solid var(--success); padding: 25px; border-radius: 10px; text-align: center; margin-top: 10px; }
-        .success-icon { font-size: 50px; color: var(--success); margin-bottom: 10px; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f6f9; margin: 0; padding: 15px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .header { background: #1a73e8; color: white; padding: 15px 20px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
+        .card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; border-left: 5px solid #f29900; }
+        .card.approved { border-left-color: #188038; }
+        .card.rejected { border-left-color: #d93025; }
+        .row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 14px; }
+        .label { font-weight: bold; color: #555; }
+        input[type="file"] { width: 100%; padding: 8px; margin: 10px 0; border: 1px dashed #1a73e8; border-radius: 5px; background: #f8faff; box-sizing: border-box; }
+        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
+        .btn { flex: 1; padding: 12px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; color: white; }
+        .btn-approve { background: #188038; }
+        .btn-reject { background: #d93025; }
+        .status-badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; text-transform: uppercase; color: white; }
+        .badge-PENDING { background: #f29900; }
+        .badge-YES { background: #188038; }
+        .badge-NO { background: #d93025; }
     </style>
 </head>
 <body>
 
-<div class="main-card">
+<div class="container">
     <div class="header">
-        <img src="https://i.ibb.co/RpQ4b5dL/logo.png" class="logo-img-main" alt="Logo">
-        <h1 style="margin:0; font-size: 24px;">APNU SEWA KENDRA</h1>
-        <p style="margin:5px 0 0 0;">Digital Service Portal | Saurabh Kumar</p>
+        <h2 style="margin: 0;">APNU SEWA KENDRA - Admin Dashboard</h2>
+        <p style="margin: 5px 0 0 0; font-size: 13px;">Live Order & Direct Document Manager</p>
     </div>
 
-    <div class="content">
-        <!-- 1. Form Page -->
-        <div id="details-page">
-            <label>आवेदक का नाम (Name)</label>
-            <input type="text" id="inpName" required placeholder="Name">
-            <label>पिता का नाम (Father's Name)</label>
-            <input type="text" id="inpFName" required placeholder="Father's Name">
-            <label>मोबाइल नंबर (Mobile Number)</label>
-            <input type="number" id="inpMobile" required placeholder="Mobile Number">
-            <label>Application ID / No.</label>
-            <input type="text" id="inpAppId" required placeholder="Application ID">
-            
-            <label>सेवा का चयन करें</label>
-            <select id="inpDoc" onchange="updatePrice()">
-                <option value="स्थाई निवास प्रमाण पत्र" data-price="150">स्थाई निवास प्रमाण पत्र - ₹150</option>
-                <option value="जाति प्रमाण पत्र" data-price="150">जाति प्रमाण पत्र - ₹150</option>
-                <option value="चरित्र प्रमाण पत्र (सामान्य)" data-price="150">चरित्र प्रमाण पत्र (सामान्य) - ₹150</option>
-                <option value="पर्वतीय प्रमाण पत्र" data-price="150">पर्वतीय प्रमाण पत्र - ₹150</option>
-                <option value="आय प्रमाण पत्र" data-price="150">आय प्रमाण पत्र - ₹150</option>
-                <option value="नया परिवार जोड़े" data-price="150">नया परिवार जोड़े - ₹150</option>
-                <option value="परिवार संशोधन" data-price="150">परिवार संशोधन - ₹150</option>
-                <option value="परिवार रजिस्टर प्रतिलिपि" data-price="150">परिवार रजिस्टर प्रतिलिपि - ₹150</option>
-                <option value="रोजगार पंजीकरण" data-price="150">रोजगार पंजीकरण - ₹150</option>
-                <option value="पेन कार्ड" data-price="200">पेन कार्ड - ₹200</option>
-                <option value="वोटर कार्ड" data-price="100">वोटर कार्ड - ₹100</option>
-                <option value="ऑनलाइन फॉर्म" data-price="100">ऑनलाइन फॉर्म - ₹100</option>
-                <option value="NSP Form" data-price="100">NSP Form - ₹100</option>
-                <option value="Writing pdf" data-price="10">Writing PDF - ₹10/Page</option>
-                <option value="Pdf generate" data-price="5">PDF Generate - ₹5/Page</option>
-            </select>
-
-            <div id="page-counter">
-                <label>कुल पेजों की संख्या (No. of Pages)</label>
-                <input type="number" id="inpPages" value="1" min="1" oninput="updatePrice()">
-            </div>
-
-            <div class="price-tag">कुल सेवा शुल्क: ₹<span id="displayPrice">150</span></div>
-            <button type="button" class="btn btn-blue" onclick="goToPayment()">पेमेंट के लिए आगे बढ़ें</button>
-        </div>
-
-        <!-- 2. Payment Page -->
-        <div id="payment-page" style="text-align: center;">
-            <div class="timer-container">भुगतान समय: <span class="timer-clock" id="timerDisplay">04:00</span></div>
-            <div style="background: #fff; padding: 15px; border: 1px solid #ddd; border-radius: 10px; margin-top: 10px;">
-                <img id="qrImg" style="width: 200px;" alt="QR Code">
-                <p style="font-weight: bold; margin-top: 5px;">UPI: saurabhraj6397@oksbi</p>
-                <p style="color: var(--danger); font-weight: bold;">राशि: ₹<span id="payAmount">0</span></p>
-            </div>
-            <label style="margin-top: 15px;">Transaction ID (UPI Ref No.)</label>
-            <input type="text" id="inpTxn" placeholder="12-digit Ref No.">
-            <button type="button" class="btn btn-green" onclick="submitData()">Submit & Verify</button>
-        </div>
-
-        <!-- 3. Waiting Page -->
-        <div id="waiting-page" style="text-align: center; padding: 30px 10px;">
-            <div class="loader"></div>
-            <h3 style="color: var(--primary); margin-bottom: 5px;">सत्यापन जारी है...</h3>
-            <p style="color: #666; font-size: 14px;">एडमिन द्वारा सत्यापन होते ही आपका दस्तावेज़ यहाँ दिखेगा। कृपया इंतज़ार करें।</p>
-            <div style="background: #fff8e1; border: 1px solid #ffe082; padding: 10px; border-radius: 6px; display: inline-block; margin-top: 10px;">
-                <strong>Status:</strong> <span style="color: var(--warning); font-weight: bold;">PENDING APPROVAL</span>
-            </div>
-        </div>
-
-        <!-- 4. Direct Document Download Page (No Receipt) -->
-        <div id="document-page">
-            <div class="success-box">
-                <div class="success-icon">✓</div>
-                <h2 style="color: var(--success); margin: 0 0 10px 0;">आपका दस्तावेज़ तैयार है!</h2>
-                <p style="color: #555; margin-bottom: 20px; font-size: 15px;">नीचे दिए गए बटन पर क्लिक करके अपना ओरिजिनल दस्तावेज़ डाउनलोड करें:</p>
-                
-                <a id="btnDocDownload" href="#" download class="btn btn-green">
-                    📥 अपना दस्तावेज़ (Document) डाउनलोड करें
-                </a>
-            </div>
-        </div>
+    <div id="requests-list">
+        <p style="text-align: center; color: #666;">Data load ho raha hai...</p>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyCDrVQM41SZoHAKEZDMtBYihJpUVZcJYx8",
@@ -132,98 +54,89 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    window.updatePrice = function() {
-        const select = document.getElementById('inpDoc');
-        const price = parseInt(select.options[select.selectedIndex].getAttribute('data-price'));
-        const val = select.value;
-        const pageBox = document.getElementById('page-counter');
-        if(val === "Writing pdf" || val === "Pdf generate") {
-            pageBox.style.display = 'block';
-            const pages = document.getElementById('inpPages').value || 1;
-            document.getElementById('displayPrice').innerText = price * pages;
-        } else {
-            pageBox.style.display = 'none';
-            document.getElementById('displayPrice').innerText = price;
+    const requestsRef = ref(db, 'requests');
+    onValue(requestsRef, (snapshot) => {
+        const listContainer = document.getElementById('requests-list');
+        listContainer.innerHTML = '';
+
+        if (!snapshot.exists()) {
+            listContainer.innerHTML = '<p style="text-align: center;">Koi request nahi mili.</p>';
+            return;
         }
-    };
 
-    window.goToPayment = function() {
-        const name = document.getElementById('inpName').value.trim();
-        const appId = document.getElementById('inpAppId').value.trim();
-        if(!name || !appId) return alert("कृपया नाम और Application ID भरें");
+        const data = snapshot.val();
+        const keys = Object.keys(data).reverse();
+
+        keys.forEach(key => {
+            const item = data[key];
+            const status = item.status || 'PENDING';
+            
+            const card = document.createElement('div');
+            card.className = `card ${status === 'YES' ? 'approved' : status === 'NO' ? 'rejected' : ''}`;
+
+            card.innerHTML = `
+                <div class="row">
+                    <span><strong>${item.name}</strong> (${item.mobile})</span>
+                    <span class="status-badge badge-${status}">${status === 'YES' ? 'Approved' : status === 'NO' ? 'Rejected' : 'Pending'}</span>
+                </div>
+                <div class="row"><span class="label">Service:</span> <span>${item.doc}</span></div>
+                <div class="row"><span class="label">App ID:</span> <span>${item.appId}</span></div>
+                <div class="row"><span class="label">Txn ID:</span> <span>${item.txn}</span></div>
+                <div class="row"><span class="label">Amount:</span> <span>₹${item.price}</span></div>
+                <div class="row"><span class="label">Date:</span> <span>${item.date}</span></div>
+                
+                ${status === 'PENDING' ? `
+                    <label style="font-size:12px; font-weight:bold; color:#1a73e8; margin-top:8px; display:block;">Select Document (PDF/Image):</label>
+                    <input type="file" id="file_${key}" accept="application/pdf,image/*">
+                    <div class="btn-group">
+                        <button class="btn btn-approve" onclick="approveOrder('${key}')">Approve & Send Document</button>
+                        <button class="btn btn-reject" onclick="rejectOrder('${key}')">Reject</button>
+                    </div>
+                ` : item.fileName ? `
+                    <div class="row" style="margin-top:8px;"><span class="label">Sent File:</span> <span>${item.fileName}</span></div>
+                ` : ''}
+            `;
+
+            listContainer.appendChild(card);
+        });
+    });
+
+    window.approveOrder = function(key) {
+        const fileInput = document.getElementById(`file_${key}`);
         
-        const finalPrice = document.getElementById('displayPrice').innerText;
-        document.getElementById('payAmount').innerText = finalPrice;
-        
-        const upiUri = `upi://pay?pa=saurabhraj6397@oksbi&pn=SaurabhKumar&am=${finalPrice}&cu=INR`;
-        document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUri)}`;
-        
-        document.getElementById('details-page').style.display = 'none';
-        document.getElementById('payment-page').style.display = 'block';
-        startTimer();
-    };
+        if (!fileInput.files || fileInput.files.length === 0) {
+            alert("Kripya pehle customer ka Document (PDF/Image) select karein!");
+            return;
+        }
 
-    function startTimer() {
-        let t = 240;
-        let timer = setInterval(() => {
-            if(t <= 0) { clearInterval(timer); return; }
-            t--;
-            let m = Math.floor(t/60), s = t%60;
-            document.getElementById('timerDisplay').innerText = `${m}:${s<10?'0'+s:s}`;
-        }, 1000);
-    }
+        const file = fileInput.files[0];
+        const reader = new FileReader();
 
-    window.submitData = function() {
-        const txn = document.getElementById('inpTxn').value.trim();
-        const appId = document.getElementById('inpAppId').value.trim();
-        const name = document.getElementById('inpName').value.trim();
-        const fName = document.getElementById('inpFName').value.trim();
-        const mobile = document.getElementById('inpMobile').value.trim();
-        const doc = document.getElementById('inpDoc').value;
-        const price = document.getElementById('displayPrice').innerText;
-        const date = new Date().toLocaleString('en-GB');
-
-        if(txn.length < 6) return alert("कृपया सही Transaction ID दर्ज करें");
-
-        const orderKey = `${appId}_${txn}`.replace(/[^a-zA-Z0-9]/g, "_");
-
-        const orderData = {
-            date: date, name: name, fName: fName, mobile: mobile,
-            appId: appId, doc: doc, price: price, txn: txn, status: "PENDING"
+        reader.onload = function(e) {
+            const fileBase64 = e.target.result;
+            
+            update(ref(db, 'requests/' + key), {
+                status: "YES",
+                docData: fileBase64,
+                fileName: file.name
+            }).then(() => {
+                alert("Document successfully customer ke phone par bhej diya gaya!");
+            }).catch((err) => {
+                console.error(err);
+                alert("Error: File size jyada bada hai. Kripya 2MB se kam ki file upload karein.");
+            });
         };
 
-        set(ref(db, 'requests/' + orderKey), orderData)
-            .then(() => {
-                document.getElementById('payment-page').style.display = 'none';
-                document.getElementById('waiting-page').style.display = 'block';
-                startCheckingFirebase(orderKey);
-            })
-            .catch((err) => {
-                console.error("Firebase Error:", err);
-                alert("Data save karne me dikkat aayi.");
-            });
+        reader.readAsDataURL(file);
     };
 
-    function startCheckingFirebase(orderKey) {
-        const orderRef = ref(db, 'requests/' + orderKey);
-        
-        onValue(orderRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data && data.status && data.status.toUpperCase() === "YES") {
-                document.getElementById('waiting-page').style.display = 'none';
-                document.getElementById('document-page').style.display = 'block';
-
-                if (data.docData) {
-                    const btnDoc = document.getElementById('btnDocDownload');
-                    btnDoc.href = data.docData;
-                    btnDoc.download = data.fileName || "Document.pdf";
-                }
-            } else if (data && data.status && data.status.toUpperCase() === "NO") {
-                alert("एडमिन द्वारा आपका अनुरोध अस्वीकार कर दिया गया है।");
-                location.reload();
-            }
-        });
-    }
+    window.rejectOrder = function(key) {
+        if(confirm("Kya aap ise reject karna chahte hain?")) {
+            update(ref(db, 'requests/' + key), {
+                status: "NO"
+            });
+        }
+    };
 </script>
 
 </body>
